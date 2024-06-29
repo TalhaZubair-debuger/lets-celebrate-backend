@@ -185,7 +185,7 @@ exports.addProduct = async (req, res, next) => {
 }
 
 exports.getOwnerBookings = async (req, res, next) => {
-    const ownerId = req.userId; // Assuming req.userId contains the ID of the owner
+    const ownerId = req.userId;
 
     try {
         const productServices = await ProductOrService.find({ userId: ownerId, "bookings": { $exists: true, $not: { $size: 0 } } })
@@ -391,3 +391,89 @@ exports.postBookEventPlaceOrService = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.getUserBookings = async (req, res, next) => {
+    const buyerId = req.userId;
+
+    try {
+        const productServices = await ProductOrService.find({ "bookings.buyerId": buyerId })
+            .populate('bookings.buyerId', 'name')
+            .select('title bookings');
+
+        if (!productServices || productServices.length === 0) {
+            return res.status(200).json({ message: "No Bookings found for this user" });
+        }
+
+        const bookings = productServices.reduce((acc, productService) => {
+            const { title, bookings } = productService;
+            const userBookings = bookings
+                .filter(booking => booking.buyerId._id.equals(buyerId))
+                .map(booking => ({
+                    ...booking.toObject(),
+                    title
+                }));
+            return acc.concat(userBookings);
+        }, []);
+
+        res.status(200).json({ bookings });
+    } catch (error) {
+        if (!error.statusCode) {
+            error.statusCode = 500;
+        }
+        next(error);
+    }
+};
+
+exports.updateProduct = async (req, res, next) => {
+    const { productId } = req.params;
+    const userId = req.userId;
+    const { image, title, description, location, category, tags, price, contactNumber, paymentPrivateKey, paymentPublicKey } = req.body;
+
+    try {
+        const product = await ProductOrService.findOne({ _id: productId, userId });
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found or unauthorized' });
+        }
+
+        product.image = image;
+        product.title = title;
+        product.description = description;
+        product.location = location;
+        product.category = category;
+        product.tags = tags;
+        product.price = price;
+        product.contactNumber = contactNumber;
+        product.paymentPrivateKey = paymentPrivateKey;
+        product.paymentPublicKey = paymentPublicKey;
+
+        const updatedProduct = await product.save();
+
+        res.status(200).json({ message: 'Product updated successfully', updatedProduct });
+    } catch (error) {
+        if (!error.statusCode) {
+            error.statusCode = 500;
+        }
+        next(error);
+    }
+}
+
+exports.deleteProduct = async (req, res, next) => {
+    const { productId } = req.params;
+    const userId = req.userId;
+
+    try {
+        const product = await ProductOrService.findOneAndDelete({ _id: productId, userId });
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found or unauthorized' });
+        }
+
+        res.status(200).json({ message: 'Product deleted successfully' });
+    } catch (error) {
+        if (!error.statusCode) {
+            error.statusCode = 500;
+        }
+        next(error);
+    }
+}

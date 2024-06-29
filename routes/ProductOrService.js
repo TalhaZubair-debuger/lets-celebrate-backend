@@ -50,4 +50,10 @@ router.post('/make-payment/:productId', isAuth, ProductOrServiceController.postM
 
 router.post('/book-service/:productId', isAuth, ProductOrServiceController.postBookEventPlaceOrService);
 
+router.get("/get-user-bookings", isAuth, ProductOrServiceController.getUserBookings);
+
+router.put('/product/:productId', isAuth, ProductOrServiceController.updateProduct);
+
+router.delete('/product/:productId', isAuth, ProductOrServiceController.deleteProduct);
+
 module.exports = router;
