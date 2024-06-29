@@ -7,8 +7,8 @@ const productOrServiceRoutes = require("./routes/ProductOrService");
 require("dotenv").config();
 
 const MONGO_URI =
-    // `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSWORD}@fyp-cluter.qauvmhw.mongodb.net/LetsCelebrate?retryWrites=true&w=majority`;
-    "mongodb://127.0.0.1:27017/LetsCelebrate";
+    `mongodb+srv://talhazubairinfo:hussbilatz@fyp-cluter.qauvmhw.mongodb.net/LetsCelebrate?retryWrites=true&w=majority`;
+    // "mongodb://127.0.0.1:27017/LetsCelebrate";
 const app = express();
 
 app.use(bodyParser.json({ limit: '20mb' }));
