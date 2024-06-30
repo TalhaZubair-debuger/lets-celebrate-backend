@@ -50,7 +50,7 @@ const ProductServiceSchema = new Schema({
     category: {
         type: String,
         required: true,
-        enum: ['Event Place', 'Catering', 'Fireworks', 'Flower Decorations'],
+        enum: ['Event Place', 'Catering', 'Fireworks', 'Flower Decorations', 'Photographer'],
     },
     tags: {
         type: [String], // Array of tags

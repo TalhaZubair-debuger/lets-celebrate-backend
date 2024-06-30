@@ -88,7 +88,7 @@ exports.searchProductOrService = async (req, res, next) => {
 
 exports.getAllProductServices = async (req, res, next) => {
     try {
-        const eventServices = await ProductOrService.find().limit(10);
+        const eventServices = await ProductOrService.find();
         if (!eventServices) {
             res.status(404).send({ message: "No Services or Event Places found" });
         }
@@ -260,7 +260,7 @@ exports.cancelBooking = async (req, res, next) => {
 
 
 exports.getBestServices = async (req, res) => {
-    const allCategories = ['Event Place', 'Catering', 'Fireworks', 'Flower Decorations'];
+    const allCategories = ['Event Place', 'Catering', 'Fireworks', 'Flower Decorations', 'Photographer'];
     const { category } = req.params;
 
     try {
@@ -268,7 +268,7 @@ exports.getBestServices = async (req, res) => {
         const bestServices = [];
 
         for (let cat of otherCategories) {
-            const bestService = await ProductOrService.findOne({ category: cat }).sort({ rating: -1 }).exec();
+            const bestService = await ProductOrService.findOne({ category: cat }).exec();
             if (bestService) {
                 bestServices.push(bestService);
             }
