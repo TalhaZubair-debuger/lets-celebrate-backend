@@ -44,7 +44,7 @@ router.post('/bookings/cancel/:bookingId', isAuth, ProductOrServiceController.ca
 
 router.get('/similar-services/:category', isAuth, ProductOrServiceController.getBestServices);//to be changed
 
-router.get("/search-by-category", isAuth, ProductOrServiceController.getSearchByCategory);
+router.post("/search-by-category", isAuth, ProductOrServiceController.getSearchByCategory);
 
 router.post('/make-payment/:productId', isAuth, ProductOrServiceController.postMakePaymentRequest);
 

@@ -42,6 +42,7 @@ exports.getTopServices = async (req, res, next) => {
 exports.searchProductOrService = async (req, res, next) => {
     try {
         const { q: searchTerm, location, category, price } = req.query;
+        console.log(category);
 
         // Construct the query object
         const query = {};
@@ -60,7 +61,7 @@ exports.searchProductOrService = async (req, res, next) => {
             query.location = { $regex: regexLocation };
         }
 
-        if (category !== "Default") {
+        if (category !== "Default" && category) {
             const regexCategory = new RegExp(category, 'i');
             query.category = { $regex: regexCategory };
         }
@@ -285,6 +286,7 @@ exports.getBestServices = async (req, res) => {
 
 exports.getSearchByCategory = async (req, res, next) => {
     const category = req.body.category;
+    console.log(category)
     try {
         const services = await ProductOrService.find({ category: { $eq: category } });
         if (!services || services.length === 0) {
